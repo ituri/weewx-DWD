@@ -283,7 +283,8 @@ def load_places(fn,projection):
                     'lat':x[3],
                     'lon':x[4],
                     'scale':float(x[5]),
-                    'peak':peak
+                    'peak':peak,
+                    'color':x[6] if len(x)>6 else None
                 }
         if projection=='DE1200':
             MAP_LOCATIONS_DE1200_WGS84.update(places)
@@ -1331,16 +1332,17 @@ class DwdRadar(object):
                     # label right above the dot
                     y_off = 4+font_size
                     x_off = 4
+                dot_color = coord.get('color') or ('#FFF' if dark_background else '#000')
                 if svg:
-                    img += '<circle cx="%s" cy="%s" r="%.2f" fill="%s" />\n' % (cx,1200-cy,width/150,'#FFF' if dark_background else '#000')
+                    img += '<circle cx="%s" cy="%s" r="%.2f" fill="%s" />\n' % (cx,1200-cy,width/150,dot_color)
                 else:
                     cx -= x
                     cy -= y
                     if cx>=0 and cy>=0:
                         if peak:
-                            draw.polygon([cx*scale-2.30940108,(height-cy)*scale+1.333333,cx*scale+2.30940108,(height-cy)*scale+1.333333,cx*scale,(height-cy)*scale-2.666667],fill=ImageColor.getrgb('#FFF' if dark_background else '#000'))
+                            draw.polygon([cx*scale-2.30940108,(height-cy)*scale+1.333333,cx*scale+2.30940108,(height-cy)*scale+1.333333,cx*scale,(height-cy)*scale-2.666667],fill=ImageColor.getrgb(dot_color))
                         else:
-                            draw.ellipse([cx*scale-2,(height-cy)*scale-2,cx*scale+2,(height-cy)*scale+2],fill=ImageColor.getrgb('#FFF' if dark_background else '#000'))
+                            draw.ellipse([cx*scale-2,(height-cy)*scale-2,cx*scale+2,(height-cy)*scale+2],fill=ImageColor.getrgb(dot_color))
                         draw.text((cx*scale+x_off,(height-cy)*scale-y_off),location,fill=ImageColor.getrgb('#FFF' if dark_background else '#000'),font=fnt)
         time3_ts = time.thread_time_ns()
         try:
