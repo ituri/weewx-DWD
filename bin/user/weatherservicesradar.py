@@ -1060,7 +1060,10 @@ class DwdRadar(object):
                 idx = i*factor/2-32.5
             else:
                 idx = i*factor
-            if i==0:
+            # RV: Intensitaeten unter 0.1 mm/h sind meist Echos, die den
+            # Boden nicht erreichen (Niesel in Wolken) - wie 0 rendern,
+            # sonst wirkt die Karte wie ein Bewoelkungsbild.
+            if i==0 or (product=='RV' and idx<0.1):
                 col = (255,255,255)
             else:
                 if product=='RW':
